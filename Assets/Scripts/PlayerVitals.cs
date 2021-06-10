@@ -12,16 +12,35 @@ public class PlayerVitals : MonoBehaviour
     public int maxThirst;
     public int thirstFallRate;
 
-    private void Start()
+    public Slider staminaSlider;
+    public int maxStamina;
+    private int staminaFallRate;
+    public int staminaFallMultiplier;
+    private int staminaRegainRate;
+    public int staminaRegainMultiplier;
+
+    private CharacterController characterController;
+    private AdventurerMoveController playerController;
+
+    void Start()
     {
         healthSlider.maxValue = maxHealth;
         healthSlider.value = maxHealth;
 
         thirstSlider.maxValue = maxThirst;
         thirstSlider.value = maxThirst;
+
+        staminaSlider.maxValue = maxStamina;
+        staminaSlider.value = maxStamina;
+
+        staminaFallRate = 1;
+        staminaRegainRate = 1;
+
+        characterController = GetComponent<CharacterController>();
+        playerController = GetComponent<AdventurerMoveController>();
     }
 
-    private void Update()
+    void Update()
     {
         #region Health
         
@@ -50,6 +69,37 @@ public class PlayerVitals : MonoBehaviour
         else if (thirstSlider.value >= maxThirst)
         {
             thirstSlider.value = maxThirst;
+        }
+
+        #endregion
+
+        #region Stamina
+
+        if (Input.GetKey(KeyCode.LeftShift)) // run
+        {
+            staminaSlider.value -= Time.deltaTime / staminaFallRate * staminaFallMultiplier;
+        }
+        else if (playerController.Speed == 1f) // walk
+        {
+            staminaSlider.value -= Time.deltaTime / staminaFallRate * (staminaFallMultiplier / 2);
+        }
+        else
+        {
+            staminaSlider.value += Time.deltaTime / staminaRegainRate * staminaRegainMultiplier;
+        }
+
+        if (staminaSlider.value >= maxStamina)
+        {
+            staminaSlider.value = maxStamina;
+        }
+        else if (staminaSlider.value <= 0)
+        {
+            staminaSlider.value = 0;
+            playerController.SetSlow(true);
+        }
+        else if (staminaSlider.value >= 0)
+        {
+            playerController.SetSlow(false);
         }
 
         #endregion

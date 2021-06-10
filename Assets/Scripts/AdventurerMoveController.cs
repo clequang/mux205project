@@ -6,6 +6,12 @@ using UnityEngine;
 public class AdventurerMoveController : MonoBehaviour
 {
     public float Velocity;
+
+    public float normalVelocity;
+    public float runningVelocity;
+    public float slowVelocity;
+    private bool isSlow;
+
     [Space]
     private float InputX;
     private float InputZ;
@@ -38,6 +44,11 @@ public class AdventurerMoveController : MonoBehaviour
         anim = this.GetComponent<Animator>();
         cam = Camera.main;
         controller = this.GetComponent<CharacterController>();
+
+        normalVelocity = Velocity;
+        runningVelocity = 2 * Velocity;
+        slowVelocity = 1;
+        isSlow = false;
     }
 
     // Update is called once per frame
@@ -58,12 +69,43 @@ public class AdventurerMoveController : MonoBehaviour
         controller.Move(moveVector);
     }
 
+    public void SetAnimationRunning(bool state)
+    {
+        anim.SetBool("isRunning", state);
+    }
+
+    public void SetSlow(bool state)
+    {
+        isSlow = state;
+    }
+
     void InputMagnitude()
     {
         InputX = Input.GetAxis("Horizontal");
         InputZ = Input.GetAxis("Vertical");
 
         Speed = new Vector2(InputX, InputZ).sqrMagnitude;
+
+        if (!isSlow)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.CapsLock))
+            {
+                SetAnimationRunning(true);
+                Velocity = runningVelocity;
+            }
+            else
+            {
+                SetAnimationRunning(false);
+                Velocity = normalVelocity;
+            }
+        }
+        else
+        {
+            Velocity = slowVelocity;
+            // force no runnning
+            SetAnimationRunning(false);
+            Speed = 0.25f;
+        }
 
         if (Speed > allowPlayerRotation)
         {
