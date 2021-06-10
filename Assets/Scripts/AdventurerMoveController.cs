@@ -12,6 +12,9 @@ public class AdventurerMoveController : MonoBehaviour
     public float slowVelocity;
     private bool isSlow;
 
+    private bool isCapslockOn;
+    public bool isRunning;
+
     [Space]
     private float InputX;
     private float InputZ;
@@ -49,11 +52,18 @@ public class AdventurerMoveController : MonoBehaviour
         runningVelocity = 2 * Velocity;
         slowVelocity = 1;
         isSlow = false;
+        isCapslockOn = false;
+        isRunning = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.CapsLock))
+        {
+            isCapslockOn = !isCapslockOn;
+        }
+
         InputMagnitude();
 
         isGrounded = controller.isGrounded;
@@ -88,15 +98,17 @@ public class AdventurerMoveController : MonoBehaviour
 
         if (!isSlow)
         {
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.CapsLock))
+            if (Input.GetKey(KeyCode.LeftShift) || (Speed >= 0.8f && Speed <= 1.0f && isCapslockOn))
             {
                 SetAnimationRunning(true);
                 Velocity = runningVelocity;
+                isRunning = true;
             }
             else
             {
                 SetAnimationRunning(false);
                 Velocity = normalVelocity;
+                isRunning = false;
             }
         }
         else
@@ -104,6 +116,7 @@ public class AdventurerMoveController : MonoBehaviour
             Velocity = slowVelocity;
             // force no runnning
             SetAnimationRunning(false);
+            isRunning = false;
             Speed = 0.25f;
         }
 

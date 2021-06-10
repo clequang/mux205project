@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Runtime.InteropServices;
 
 public class PlayerVitals : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class PlayerVitals : MonoBehaviour
     private CharacterController characterController;
     private AdventurerMoveController playerController;
 
+    [DllImport("user32.dll")]
+    public static extern short GetKeyState(int keyCode);
+    bool isCapsLockOn = false;
+
     void Start()
     {
         healthSlider.maxValue = maxHealth;
@@ -38,12 +43,19 @@ public class PlayerVitals : MonoBehaviour
 
         characterController = GetComponent<CharacterController>();
         playerController = GetComponent<AdventurerMoveController>();
+
+        isCapsLockOn = (((ushort)GetKeyState(0x14)) & 0xffff) != 0;//init stat
     }
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.CapsLock))
+        {
+            isCapsLockOn = !isCapsLockOn;
+        }
+
         #region Health
-        
+
         if (thirstSlider.value <= 0)
         {
             healthSlider.value -= Time.deltaTime / healthFallRate * 2;
@@ -75,7 +87,7 @@ public class PlayerVitals : MonoBehaviour
 
         #region Stamina
 
-        if (Input.GetKey(KeyCode.LeftShift)) // run
+        if (Input.GetKey(KeyCode.LeftShift) || playerController.isRunning) // run
         {
             staminaSlider.value -= Time.deltaTime / staminaFallRate * staminaFallMultiplier;
         }
@@ -83,7 +95,7 @@ public class PlayerVitals : MonoBehaviour
         {
             staminaSlider.value -= Time.deltaTime / staminaFallRate * (staminaFallMultiplier / 2);
         }
-        else
+        else // stop
         {
             staminaSlider.value += Time.deltaTime / staminaRegainRate * staminaRegainMultiplier;
         }
