@@ -3,7 +3,8 @@ Rendu de projet MUX205 1ere année
 
 ## Description du projet
 Projet Unity 3D
-Création d'un jeu 3D de mining
+
+Création d'un jeu 3D de mining : MinePlanet
 
 ## Principe du jeu
 Un personnage 3D évolue sur un terrain généré de manière procédural. Il peut marcher et courir sur ce terrain en escaladant les obstacles.
@@ -15,6 +16,21 @@ Une interface graphique 2D du personnage affiche en temps réel ses niveaux :
 - Endurance : Plus le personnage fait des efforts plus l'endurance diminue. Quand l'endurance est à zéro, le personnage ralentit. Il doit s'arrêter pour récupérer de l'endurance.
 
 - Nombre de ressources collectées
+
+En plus de la scène principale du jeu, 2 scènes servent de transition :
+* Menu principal
+* GameOver
+
+## Commandes du jeu
+
+Clavier :
+- Flèches directionnelles pour se déplacer dans toutes les directions
+- Touche LEFTSHIFT maintenue pour courir
+- Echap : affiche un écran de pause
+
+Gamepad : (testé sur XBOX controller PC)
+- Molette analogique gauche pour se déplacer dans toutes les directions
+- Bouton A maintenu pour courir
 
 ## Modélisation
 Le personnage est modélisé et animé sous Blender avec un algorithme de cinématique inverse.
