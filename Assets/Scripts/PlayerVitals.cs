@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Runtime.InteropServices;
-
+using UnityEngine.SceneManagement;
 public class PlayerVitals : MonoBehaviour
 {
     public Slider healthSlider;
@@ -23,10 +23,6 @@ public class PlayerVitals : MonoBehaviour
     private CharacterController characterController;
     private AdventurerMoveController playerController;
 
-    [DllImport("user32.dll")]
-    public static extern short GetKeyState(int keyCode);
-    bool isCapsLockOn = false;
-
     void Start()
     {
         healthSlider.maxValue = maxHealth;
@@ -43,17 +39,10 @@ public class PlayerVitals : MonoBehaviour
 
         characterController = GetComponent<CharacterController>();
         playerController = GetComponent<AdventurerMoveController>();
-
-        isCapsLockOn = (((ushort)GetKeyState(0x14)) & 0xffff) != 0;//init stat
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.CapsLock))
-        {
-            isCapsLockOn = !isCapsLockOn;
-        }
-
         #region Health
 
         if (thirstSlider.value <= 0)
@@ -119,6 +108,7 @@ public class PlayerVitals : MonoBehaviour
 
     void CharacterDeath()
     {
-        // TODO
+        // Game over scene
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }

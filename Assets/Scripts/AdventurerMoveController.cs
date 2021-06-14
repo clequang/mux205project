@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -12,7 +13,9 @@ public class AdventurerMoveController : MonoBehaviour
     public float slowVelocity;
     private bool isSlow;
 
-    private bool isCapslockOn;
+    [DllImport("user32.dll")]
+    public static extern short GetKeyState(int keyCode);
+    private bool isCapslockOn = false;
     public bool isRunning;
     public bool isWalking;
     public bool isStopped;
@@ -54,7 +57,7 @@ public class AdventurerMoveController : MonoBehaviour
         runningVelocity = 3 * Velocity;
         slowVelocity = 1;
         isSlow = false;
-        isCapslockOn = false;
+        isCapslockOn = (((ushort)GetKeyState(0x14)) & 0xffff) != 0;//init stat
         isRunning = false;
         isWalking = false;
         isStopped = true;
