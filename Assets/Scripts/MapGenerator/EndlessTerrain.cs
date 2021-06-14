@@ -14,6 +14,10 @@ public class EndlessTerrain : MonoBehaviour
     public Transform viewer;
     public Material mapMaterial;
 
+    public GameObject resourceToSpawn;
+    public float resourceXToSpawn;
+    public float resourceZToSpawn;
+
     public static Vector2 viewerPosition;
     Vector2 viewerPositionOld;
 
@@ -46,6 +50,16 @@ public class EndlessTerrain : MonoBehaviour
         }
     }
 
+    void SpawnResource(Vector2 chunkCoord, int chunkSize)
+    {
+        float resourceYSpread = 0.2f;
+
+        Vector2 position = chunkCoord * (chunkSize / 2);
+        Vector3 offsetPositionV3 = new Vector3(position.x + Random.Range(-resourceXToSpawn, resourceXToSpawn), resourceYSpread, position.y + Random.Range(-resourceZToSpawn, resourceZToSpawn));
+
+        GameObject clone = Instantiate(resourceToSpawn, offsetPositionV3, Quaternion.identity);
+    }
+
     void UpdateVisibleChunks()
     {
 
@@ -63,6 +77,8 @@ public class EndlessTerrain : MonoBehaviour
             for (int xOffset = -chunksVisibleInViewDst; xOffset <= chunksVisibleInViewDst; xOffset++)
             {
                 Vector2 viewedChunkCoord = new Vector2(currentChunkCoordX + xOffset, currentChunkCoordY + yOffset);
+
+                SpawnResource(viewedChunkCoord, chunkSize);
 
                 if (terrainChunkDictionary.ContainsKey(viewedChunkCoord))
                 {
