@@ -47,7 +47,7 @@ public class PlayerVitals : MonoBehaviour
 
         if (thirstSlider.value <= 0)
         {
-            healthSlider.value -= Time.deltaTime / healthFallRate * 2;
+            healthSlider.value -= Time.deltaTime / healthFallRate * 50;
         }        
 
         if (healthSlider.value <= 0)
@@ -61,7 +61,7 @@ public class PlayerVitals : MonoBehaviour
 
         if (thirstSlider.value >= 0)
         {
-            thirstSlider.value -= Time.deltaTime / thirstFallRate;
+            thirstSlider.value -= Time.deltaTime / thirstFallRate * 3;
         }
         else if (thirstSlider.value <= 0)
         {
