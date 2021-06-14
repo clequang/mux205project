@@ -20,6 +20,7 @@ public class ItemCollector : MonoBehaviour
         {
             case "resource":
                 nbResourceCollected += 1;
+                GetComponent<AudioSource>().Play();
                 textResourceNumber.text = $"x {nbResourceCollected:00000000}";
                 break;
         }
