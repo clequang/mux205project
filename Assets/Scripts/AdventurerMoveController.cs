@@ -14,6 +14,8 @@ public class AdventurerMoveController : MonoBehaviour
 
     private bool isCapslockOn;
     public bool isRunning;
+    public bool isWalking;
+    public bool isStopped;
 
     [Space]
     private float InputX;
@@ -49,11 +51,13 @@ public class AdventurerMoveController : MonoBehaviour
         controller = this.GetComponent<CharacterController>();
 
         normalVelocity = Velocity;
-        runningVelocity = 2 * Velocity;
+        runningVelocity = 3 * Velocity;
         slowVelocity = 1;
         isSlow = false;
         isCapslockOn = false;
         isRunning = false;
+        isWalking = false;
+        isStopped = true;
     }
 
     // Update is called once per frame
@@ -96,28 +100,22 @@ public class AdventurerMoveController : MonoBehaviour
 
         Speed = new Vector2(InputX, InputZ).sqrMagnitude;
 
-        if (!isSlow)
+        if (Speed == 0)
         {
-            if (Input.GetKey(KeyCode.LeftShift) || (Speed >= 0.8f && Speed <= 1.0f && isCapslockOn))
-            {
-                SetAnimationRunning(true);
-                Velocity = runningVelocity;
-                isRunning = true;
-            }
-            else
-            {
-                SetAnimationRunning(false);
-                Velocity = normalVelocity;
-                isRunning = false;
-            }
-        }
-        else
-        {
-            Velocity = slowVelocity;
-            // force no runnning
+            isStopped = true;
+            // force no running
             SetAnimationRunning(false);
             isRunning = false;
-            Speed = 0.25f;
+            isWalking = false;
+
+            anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
+
+            return;
+        } 
+        else
+        {
+            SetAnimationRunning(false);
+            isStopped = false;
         }
 
         if (Speed > allowPlayerRotation)
@@ -128,6 +126,39 @@ public class AdventurerMoveController : MonoBehaviour
         else if (Speed < allowPlayerRotation)
         {
             anim.SetFloat("Blend", Speed, StopAnimTime, Time.deltaTime);
+        }
+
+        bool isSpeedForRun = Speed >= 0.8f && Speed <= 1.0f;
+
+        if (!isSlow)
+        {
+            // Run command
+            if ((isSpeedForRun && Input.GetKey(KeyCode.LeftShift))
+                || (isSpeedForRun && Input.GetButton("Fire1"))
+                /*|| (isSpeedForRun && isCapslockOn)*/)
+            {
+                SetAnimationRunning(true);
+                Velocity = runningVelocity;
+                isRunning = true;
+                isWalking = false;
+            }
+            else
+            {
+                SetAnimationRunning(false);
+                Velocity = normalVelocity;
+                isRunning = false;
+                isWalking = true;
+            }
+        }
+        else // isSlow = true
+        {
+            Velocity = slowVelocity;
+            // force no running
+            SetAnimationRunning(false);
+            isRunning = false;
+            isStopped = false;
+            isWalking = true;
+            Speed = 0.25f;
         }
     }
 

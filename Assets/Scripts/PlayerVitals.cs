@@ -68,7 +68,7 @@ public class PlayerVitals : MonoBehaviour
 
         #endregion
 
-        #region Health
+        #region Thirst
 
         if (thirstSlider.value >= 0)
         {
@@ -87,15 +87,15 @@ public class PlayerVitals : MonoBehaviour
 
         #region Stamina
 
-        if (Input.GetKey(KeyCode.LeftShift) || playerController.isRunning) // run
-        {
-            staminaSlider.value -= Time.deltaTime / staminaFallRate * staminaFallMultiplier;
-        }
-        else if (playerController.Speed == 1f) // walk
+        if (playerController.isRunning) // run
         {
             staminaSlider.value -= Time.deltaTime / staminaFallRate * (staminaFallMultiplier / 2);
         }
-        else // stop
+        else if (playerController.isWalking) // walk
+        {
+            staminaSlider.value -= Time.deltaTime / staminaFallRate * (staminaFallMultiplier / 5);
+        }
+        else if (playerController.isStopped) // stop
         {
             staminaSlider.value += Time.deltaTime / staminaRegainRate * staminaRegainMultiplier;
         }
